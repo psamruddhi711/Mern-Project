@@ -1,6 +1,8 @@
 const express = require("express");
 
 const userRouter = require("./routes/users");
+// const courseRoutes = require('./routes/course');
+// app.use('/course', courseRoutes);
 const { authUser, checkAuthorization } = require("./utils/auth");
 const app = express();
 
