@@ -7,6 +7,14 @@ const app = express();
 // middlewares
 app.use(express.json());
 app.use(authUser);
+app.use(cors());
+router.get(
+  "/enrolled-students",
+  auth,
+  isAdmin,
+  controller.getEnrolledStudents
+);
+
 // app.use(checkAuthorization);
 app.use("/users", userRouter);
 
