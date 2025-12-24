@@ -1,5 +1,6 @@
 const express = require("express");
-
+const cors = require("cors");
+//const {authUser} = require("./utils/auth");
 const userRouter = require("./routes/users");
 const courseRoutes = require('./routes/course');
 const videoRouter = require("./routes/video")
@@ -11,12 +12,6 @@ const app = express();
 app.use(express.json());
 app.use(authUser);
 app.use(cors());
-router.get(
-  "/enrolled-students",
-  auth,
-  isAdmin,
-  controller.getEnrolledStudents
-);
 
 // app.use(checkAuthorization);
 app.use("/users", userRouter);
