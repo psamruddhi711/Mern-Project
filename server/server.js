@@ -1,8 +1,6 @@
 const express = require("express");
 
 const userRouter = require("./routes/users");
-const adminRouter = require("./routes/admin");
-
 // const courseRoutes = require('./routes/course');
 // app.use('/course', courseRoutes);
 const { authUser, checkAuthorization } = require("./utils/auth");
@@ -15,8 +13,6 @@ app.use(authUser);
 
 //app.use(checkAuthorization);
 app.use("/users", userRouter);
-app.use("/admin", adminRouter);
-
 
 app.listen(4000, "localhost", () => {
   console.log("Server is running on 4000");
