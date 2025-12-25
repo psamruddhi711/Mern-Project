@@ -2,16 +2,20 @@
     const router = express.Router();
     const db = require("../db/pool");
     const result = require("../utils/result");
+const { checkAuthorization } = require("../utils/auth");
 
-    router.get("/enrolled-students", (req,res)=>{
-    const courseId = req.query.courseId 
+
+
+
+    router.get("/enrolled-students", (req, res)=>{
+    const {course_id } = req.body; 
         const sql = `SELECT * FROM students WHERE course_id=?`;
-    db.query(sql,[courseId], (error, data)=>{    
+    db.query(sql,[course_id], (error, data)=>{    
         res.send(result.createResult(error,data));
 
     });
     });
-
+    
 
 
     module.exports = router;
