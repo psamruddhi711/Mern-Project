@@ -2,12 +2,12 @@
     const router = express.Router();
     const db = require("../db/pool");
     const result = require("../utils/result");
-const { checkAuthorization } = require("../utils/auth");
+const { checkAuthorization, authUser } = require("../utils/auth");
 
 
 
 
-    router.get("/enrolled-students", (req, res)=>{
+    router.get("/enrolled-students", authUser, checkAuthorization,(req, res)=>{
     const {course_id } = req.body; 
         const sql = `SELECT * FROM students WHERE course_id=?`;
     db.query(sql,[course_id], (error, data)=>{    
