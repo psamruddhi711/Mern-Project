@@ -12,7 +12,6 @@ const { checkAuthorization, authUser } = require("../utils/auth");
         const sql = `SELECT * FROM students WHERE course_id=?`;
     db.query(sql,[course_id], (error, data)=>{    
         res.send(result.createResult(error,data));
-
     });
     });
     

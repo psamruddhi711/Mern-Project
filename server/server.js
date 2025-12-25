@@ -9,6 +9,7 @@ app.use("/video", videoRoutes);
 
 // const courseRoutes = require('./routes/course');
 // app.use('/course', courseRoutes);
+const courseRouter = require('./routes/course');
 const { authUser, checkAuthorization } = require("./utils/auth");
 const app = express();
 
@@ -18,6 +19,10 @@ app.use(authUser);
 
 app.use("/admin",adminRouter)
 app.use(cors());
+app.use("/admin", adminRouter);
+app.use("/course", courseRouter);
+app.use(cors());
+
 //app.use(checkAuthorization);
 app.use("/users", userRouter);
 
