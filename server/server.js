@@ -1,5 +1,6 @@
 const express = require("express");
-
+const cors = require("cors");
+//const {authUser} = require("./utils/auth");
 const userRouter = require("./routes/users");
 // const courseRoutes = require('./routes/course');
 // app.use('/course', courseRoutes);
@@ -9,7 +10,7 @@ const app = express();
 // middlewares
 app.use(express.json());
 app.use(authUser);
-
+app.use(cors());
 
 //app.use(checkAuthorization);
 app.use("/users", userRouter);
