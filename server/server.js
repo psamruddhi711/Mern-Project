@@ -18,6 +18,8 @@ app.use(authUser);
 app.use("/admin",adminRouter)
 app.use(cors());
 
+app.use("/admin",adminRouter)
+app.use(cors());
 
 //app.use(checkAuthorization);
 app.use("/users", userRouter);
