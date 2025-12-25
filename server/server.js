@@ -17,8 +17,18 @@ const app = express();
 app.use(express.json());
 app.use(authUser);
 
+<<<<<<< HEAD
 app.use("/admin", adminRouter);
 app.use("/course", courseRouter);
+=======
+app.use("/admin",adminRouter)
+app.use(cors());
+
+
+app.use("/admin", adminRouter);
+app.use("/course", courseRouter);
+app.use(cors());
+>>>>>>> 6017b609cac0a75df906a5f681eb4dea4ed96b50
 
 //app.use(checkAuthorization);
 app.use("/users", userRouter);

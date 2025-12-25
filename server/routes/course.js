@@ -110,24 +110,8 @@ router.delete("/delete/:courseId", checkAuthorization, (req, res) => {
 //current courses for users
 router.get("/current-courses", (req, res)=>{
         const sql = `SELECT * FROM courses WHERE CURDATE() BETWEEN start_date AND end_date`;
-    db.query(sql, (error, data)=>{    
+        pool.query(sql, (error, data)=>{    
         res.send(result.createResult(error,data));
-
-<<<<<<< HEAD
-
-
- router.get("/current-courses", (req, res)=>{
-        const sql = `SELECT * FROM courses WHERE CURDATE() BETWEEN start_date AND end_date`;
-    db.query(sql, (error, data)=>{    
-        res.send(result.createResult(error,data));
-
     });
     });
-
-
-
-=======
-    });
-    });
->>>>>>> 64ce05924f958e69861bac11ba9535548f1ab0af
 module.exports = router;
