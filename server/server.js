@@ -19,13 +19,11 @@ app.use(authUser);
 
 app.use("/admin",adminRouter)
 app.use(cors());
-<<<<<<< HEAD
 
-=======
+
 app.use("/admin", adminRouter);
 app.use("/course", courseRouter);
 app.use(cors());
->>>>>>> 64ce05924f958e69861bac11ba9535548f1ab0af
 
 //app.use(checkAuthorization);
 app.use("/users", userRouter);
