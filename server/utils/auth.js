@@ -5,33 +5,39 @@ const result = require("./result");
 function authUser(req, res, next) {
     const path = req.url;
 
-    if (path === '/users/signin' || path === '/users/signup', path=='/admin/enrolled-students') {
+    // Only bypass LOGIN
+    if (path === '/users/signin') {
         return next();
     }
 
-    const token = req.headers.token;
-    if (!token) {
-        return res.send(result.createResult('Token is missing'));
-    }
+    // const authHeader = req.headers.authorization;///  DOESNT REQUIRE AUTH HEADER 
+    // if (!authHeader) {
+    //     return res.send(result.createResult('Token is missing'));
+    // }
 
     try {
+        // const token = authHeader.startsWith("Bearer ") //// THIS IS AN OPTION USED FOR CCONST TOKEN
+        //     ? authHeader.split(" ")[1]
+        //     : authHeader;
+
+        const token = req.headers.token;
+        console.log(token);
+        
+
         const payload = jwt.verify(token, config.SECRET);
 
-        // ✅ SET FROM TOKEN (not client)
-        req.headers.uid = payload.uid;
-        req.headers.email = payload.email;
-        req.headers.role = payload.role;
-
-        console.log("current user role:", payload.role);
-
+        req.user = payload;              //  store user properly
+        req.headers.role = payload.role; // optional
         next();
     } catch (err) {
-        res.send(result.createResult('Token is invalid'));
+        return res.send(result.createResult('Token is invalid'));
     }
 }
 
+
+
 function checkAuthorization(req, res, next) {
-  const role = req.headers.role;
+  const role = req.user.role;
   console.log("current user role: ", role);
 
   if (role === "ADMIN") {
