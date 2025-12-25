@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const videoController = require("../controllers/video.controller");
+const videoController = require("../routes/video");
 const { authUser, checkAuthorization } = require("../utils/auth");
 
 // Logged-in users
