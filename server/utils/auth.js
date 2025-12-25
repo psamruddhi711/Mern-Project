@@ -5,7 +5,7 @@ const result = require("./result");
 function authUser(req, res, next) {
     const path = req.url;
 
-    if (path === '/users/signin' || path === '/users/signup') {
+    if (path === '/users/signin' || path === '/users/signup', path=='/admin/enrolled-students') {
         return next();
     }
 
