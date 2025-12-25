@@ -35,8 +35,6 @@ router.delete(
 
 module.exports = router;
 
-
-
 const db = require("../db/pool");
 
 /**
