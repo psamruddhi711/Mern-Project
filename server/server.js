@@ -3,6 +3,9 @@ const cors = require("cors");
 //const {authUser} = require("./utils/auth");
 const userRouter = require("./routes/users");
 const adminRouter = require("./routes/admin");
+const videoRoutes = require("./routes/video");
+
+app.use("/video", videoRoutes);
 
 // const courseRoutes = require('./routes/course');
 // app.use('/course', courseRoutes);
