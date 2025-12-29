@@ -5,7 +5,7 @@ const userRouter = require("./routes/users");
 const adminRouter = require("./routes/admin");
 const videoRouter = require("./routes/video");
 const courseRouter = require('./routes/course');
-const studentRouter = require("./routes/student");
+const studentsRouter = require("./routes/students");
 
 // const courseRoutes = require('./routes/course');
 // app.use('/course', courseRoutes);
@@ -21,7 +21,7 @@ app.use("/admin", adminRouter);
 app.use("/course", courseRouter);
 app.use("/video", videoRouter);
 app.use("/users", userRouter);
-app.use("/student", studentRouter);
+app.use("/students", studentsRouter);
 //app.use(checkAuthorization);
 
 
