@@ -3,12 +3,12 @@
     const db = require("../db/pool");
     const result = require("../utils/result");
 const { checkAuthorization, authUser } = require("../utils/auth");
+const pool = require("../db/pool");
 
 
 
 
-
-    router.get("/enrolled-students", authUser, checkAuthorization,(req, res)=>{
+    router.get("/enrolled-students-courses", authUser, checkAuthorization,(req, res)=>{
     const {course_id } = req.body; 
         const sql = `SELECT * FROM students WHERE course_id=?`;
     db.query(sql,[course_id], (error, data)=>{    

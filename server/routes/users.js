@@ -52,18 +52,32 @@ router.get("/", (req, res) => {
 // get all students (admin)
 router.get("/all-students", checkAuthorization, (req, res) => {
   // const email = req.headers.email;
-  const sql = `SELECT * FROM users`;
+  const sql = `SELECT * FROM users WHERE role = 'STUDENT'`;
   pool.query(sql, (error, data) => {
     res.send(result.createResult(error, data));
   });
 });
 
-router.delete("/", (req, res) => {
-  const uid = req.headers.uid;
-  const sql = `DELETE FROM users WHERE uid = ?`;
-  pool.query(sql, [uid], (error, data) => {
-    res.send(result.createResult(error, data));
-  });
-});
+router.delete("/delete-user", checkAuthorization, (req, res) => {
+  const email = req.headers.email;
 
+  pool.query(
+    "DELETE FROM students WHERE email = ?",
+    [email],
+    (err1) => {
+      if (err1) {
+        return res.send(result.createResult(err1));
+      }
+
+      pool.query(
+        "DELETE FROM users WHERE email = ? AND role = 'STUDENT'",
+        [email],
+        (err2, data) => {
+          res.send(result.createResult(err2, data));
+        }
+      );
+    }
+  );
+});
 module.exports = router;
+
