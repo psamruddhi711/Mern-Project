@@ -6,6 +6,7 @@ const { checkAuthorization } = require("../utils/auth");
 
 const router = express.Router();
 
+// Videos Api
 /**
  * GET /video/all-videos?courseId=
  * Accessible to logged-in users
@@ -45,7 +46,6 @@ router.post("/add", checkAuthorization, (req, res) => {
     }
   );
 });
-
 
 /**
  * PUT /video/update

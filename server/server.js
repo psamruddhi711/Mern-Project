@@ -26,5 +26,5 @@ app.use("/student", studentRouter);
 
 
 app.listen(4000, "localhost", () => {
-  console.log("Server is running on 4000");
+  console.log(" Backend Server is running on 4000");
 });
