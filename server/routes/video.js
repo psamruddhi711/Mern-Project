@@ -1,67 +1,34 @@
 const express = require("express");
+
+const pool = require("../db/pool");
+const result = require("../utils/result");
+const { checkAuthorization } = require("../utils/auth");
+
 const router = express.Router();
-
-const videoController = require("../routes/video");
-const { authUser, checkAuthorization } = require("../utils/auth");
-
-// Logged-in users
-router.get(
-  "/all-videos",
-  authUser,
-  videoController.getAllVideos
-);
-
-// Admin / Instructor only
-router.post(
-  "/add",
-  authUser,
-  checkAuthorization,
-  videoController.addVideo
-);
-
-router.put(
-  "/update/:videoId",
-  authUser,
-  checkAuthorization,
-  videoController.updateVideo
-);
-
-router.delete(
-  "/delete/:videoId",
-  authUser,
-  checkAuthorization,
-  videoController.deleteVideo
-);
-
-module.exports = router;
-
-const db = require("../db/pool");
 
 /**
  * GET /video/all-videos?courseId=
+ * Accessible to logged-in users
  */
-exports.getAllVideos = (req, res) => {
-  const { courseId } = req.query;
+router.get("/all-videos", (req, res) => {
+  const { course_id } = req.body;
 
   const sql = `
-    SELECT video_id, course_id, title, description, youtube_url, added_at
+    SELECT *
     FROM videos
     WHERE course_id = ?
   `;
 
-  db.query(sql, [courseId], (err, result) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ message: "Database error" });
-    }
-    res.json(result);
+  pool.query(sql, [course_id], (error, data) => {
+    res.send(result.createResult(error, data));
   });
-};
+});
 
 /**
  * POST /video/add
+ * Admin / Instructor only
  */
-exports.addVideo = (req, res) => {
+router.post("/add", checkAuthorization, (req, res) => {
   const { video_id, course_id, title, description, youtube_url } = req.body;
 
   const sql = `
@@ -70,58 +37,52 @@ exports.addVideo = (req, res) => {
     VALUES (?, ?, ?, ?, ?, CURDATE())
   `;
 
-  db.query(
+  pool.query(
     sql,
     [video_id, course_id, title, description, youtube_url],
-    err => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ message: "Failed to add video" });
-      }
-      res.json({ message: "Video added successfully" });
+    (error, data) => {
+      res.send(result.createResult(error, data));
     }
   );
-};
+});
+
 
 /**
- * PUT /video/update/:videoId
+ * PUT /video/update
+ * Admin / Instructor only
  */
-exports.updateVideo = (req, res) => {
-  const { videoId } = req.params;
-  const { course_id, title, description, youtube_url } = req.body;
+router.put("/update", checkAuthorization, (req, res) => {
+     
+  const { video_id, title, description, youtube_url } = req.body;
 
   const sql = `
     UPDATE videos
-    SET course_id = ?, title = ?, description = ?, youtube_url = ?
+    SET title = ?, description = ?, youtube_url = ?
     WHERE video_id = ?
   `;
 
-  db.query(
+  pool.query(
     sql,
-    [course_id, title, description, youtube_url, videoId],
-    err => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ message: "Failed to update video" });
-      }
-      res.json({ message: "Video updated successfully" });
+    [title, description, youtube_url, video_id],
+    (error, data) => {
+      res.send(result.createResult(error, data));
     }
   );
-};
+});
+
 
 /**
- * DELETE /video/delete/:videoId
+ * DELETE /video/delete
+ * Admin / Instructor only
  */
-exports.deleteVideo = (req, res) => {
-  const { videoId } = req.params;
+router.delete("/delete", checkAuthorization, (req, res) => {
+  const { video_id } = req.body;
 
-  const sql = "DELETE FROM videos WHERE video_id = ?";
+  const sql = `DELETE FROM videos WHERE video_id = ?`;
 
-  db.query(sql, [videoId], err => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ message: "Failed to delete video" });
-    }
-    res.json({ message: "Video deleted successfully" });
+  pool.query(sql, [video_id], (error, data) => {
+    res.send(result.createResult(error, data));
   });
-};
+});
+
+module.exports = router;
