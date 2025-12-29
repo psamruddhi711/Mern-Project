@@ -9,6 +9,7 @@ app.use("/video", videoRoutes);
 
 // const courseRoutes = require('./routes/course');
 // app.use('/course', courseRoutes);
+
 const { authUser, checkAuthorization } = require("./utils/auth");
 const app = express();
 
@@ -23,6 +24,9 @@ app.use(cors());
 
 //app.use(checkAuthorization);
 app.use("/users", userRouter);
+app.use("/student", studentRouter);
+//app.use(checkAuthorization);
+
 
 app.listen(4000, "localhost", () => {
   console.log("Server is running on 4000");

@@ -1,30 +1,32 @@
 const express = require("express");
-
 const pool = require("../db/pool");
 const result = require("../utils/result");
 const { checkAuthorization } = require("../utils/auth");
 
 const router = express.Router();
 
-// Get all courses with optional date filtering (admin)
-router.get("/all-courses", checkAuthorization, (req, res) => {
-  const { startDate, endDate } = req.query;
+/**
+ * GET ALL COURSES (ADMIN)
+ * Optional filters: start_date, end_date
+ * Example:
+ * /courses/all-courses?start_date=2024-01-10&end_date=2024-03-10
+ */
+router.get("/all-courses", (req, res) => {
+  const { start_date, end_date } = req.query;
 
   let sql = `SELECT * FROM courses WHERE 1=1`;
   const params = [];
 
-  // Add date filters if provided
-  if (startDate) {
+  if (start_date) {
     sql += ` AND start_date >= ?`;
-    params.push(startDate);
+    params.push(start_date);
   }
 
-  if (endDate) {
+  if (end_date) {
     sql += ` AND end_date <= ?`;
-    params.push(endDate);
+    params.push(end_date);
   }
 
-  // Order by start date
   sql += ` ORDER BY start_date ASC`;
 
   pool.query(sql, params, (error, data) => {
@@ -32,68 +34,129 @@ router.get("/all-courses", checkAuthorization, (req, res) => {
   });
 });
 
-// Add a new course (admin)
+/**
+ * ADD COURSE (ADMIN)
+ */
 router.post("/add", checkAuthorization, (req, res) => {
-  const { courseName, description, fees, startDate, endDate, videoExpireDays } = req.body;
+  const {
+    courseName,
+    description,
+    fees,
+    startDate,
+    endDate,
+    videoExpireDays
+  } = req.body;
 
-  // Validate required fields
   if (!courseName || !description || !fees || !startDate || !endDate || !videoExpireDays) {
     return res.send(result.createResult("All fields are required"));
   }
 
-  const sql = `INSERT INTO courses (course_name, description, fees, start_date, end_date, video_expiry_days) 
-               VALUES (?, ?, ?, ?, ?, ?)`;
+  // 1️⃣ Get next course_id
+  const getIdSql = `SELECT IFNULL(MAX(course_id), 0) + 1 AS nextId FROM courses`;
 
-  const params = [courseName, description, fees, startDate, endDate, videoExpireDays];
-
-  pool.query(sql, params, (error, data) => {
-    if (error) {
-      return res.send(result.createResult(error));
+  pool.query(getIdSql, (err, idResult) => {
+    if (err) {
+      return res.send(result.createResult(err));
     }
-    res.send(result.createResult(null, { 
-      message: "Course added successfully",
-      courseId: data.insertId
-    }));
+
+    const nextCourseId = idResult[0].nextId;
+
+    // 2️⃣ Insert with course_id
+    const insertSql = `
+      INSERT INTO courses 
+      (course_id, course_name, description, fees, start_date, end_date, video_expiry_days)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const params = [
+      nextCourseId,
+      courseName,
+      description,
+      fees,
+      startDate,
+      endDate,
+      videoExpireDays
+    ];
+
+    pool.query(insertSql, params, (error) => {
+      if (error) {
+        return res.send(result.createResult(error));
+      }
+
+      res.send(
+        result.createResult(null, {
+          message: "Course added successfully",
+          courseId: nextCourseId
+        })
+      );
+    });
   });
 });
 
-// Update a course (admin)
+
+/**
+ * UPDATE COURSE (ADMIN)
+ */
 router.put("/update/:courseId", checkAuthorization, (req, res) => {
   const { courseId } = req.params;
-  const { courseName, description, fees, startDate, endDate, videoExpireDays } = req.body;
+  const {
+    courseName,
+    description,
+    fees,
+    startDate,
+    endDate,
+    videoExpireDays
+  } = req.body;
 
-  // Validate required fields
   if (!courseName || !description || !fees || !startDate || !endDate || !videoExpireDays) {
     return res.send(result.createResult("All fields are required"));
   }
 
-  const sql = `UPDATE courses 
-               SET course_name = ?, description = ?, fees = ?, start_date = ?, end_date = ?, video_expiry_days = ? 
-               WHERE course_id = ?`;
+  const sql = `
+    UPDATE courses
+    SET course_name = ?, description = ?, fees = ?, 
+        start_date = ?, end_date = ?, video_expiry_days = ?
+    WHERE course_id = ?
+  `;
 
-  const params = [courseName, description, fees, startDate, endDate, videoExpireDays, courseId];
+  const params = [
+    courseName,
+    description,
+    fees,
+    startDate,
+    endDate,
+    videoExpireDays,
+    courseId
+  ];
 
   pool.query(sql, params, (error, data) => {
     if (error) {
       return res.send(result.createResult(error));
     }
-    
+
     if (data.affectedRows === 0) {
       return res.send(result.createResult("Course not found"));
     }
 
-    res.send(result.createResult(null, { 
-      message: "Course updated successfully",
-      courseId: courseId
-    }));
+    res.send(
+      result.createResult(null, {
+        message: "Course updated successfully",
+        courseId
+      })
+    );
   });
 });
-//DELETE A COURSE 
+
+/**
+ * DELETE COURSE (ADMIN)
+ */
 router.delete("/delete/:courseId", checkAuthorization, (req, res) => {
   const { courseId } = req.params;
-  const sql =` DELETE FROM courses WHERE course_id = ? `;
-  pool.query(sql,this.params=[courseId],(error,data)=>{
-    if(error){
+
+  const sql = `DELETE FROM courses WHERE course_id = ?`;
+
+  pool.query(sql, [courseId], (error, data) => {
+    if (error) {
       return res.send(result.createResult(error));
     }
 
@@ -101,10 +164,26 @@ router.delete("/delete/:courseId", checkAuthorization, (req, res) => {
       return res.send(result.createResult("Course not found"));
     }
 
-    res.send(result.createResult(null, { 
-      message: "Course deleted successfully",
-      courseId: courseId
-    }));
+    res.send(
+      result.createResult(null, {
+        message: "Course deleted successfully",
+        courseId
+      })
+    );
+  });
+});
+
+/**
+ * CURRENT COURSES (USER)
+ */
+router.get("/current-courses", (req, res) => {
+  const sql = `
+    SELECT * FROM courses
+    WHERE CURDATE() BETWEEN start_date AND end_date
+  `;
+
+  pool.query(sql, (error, data) => {
+    res.send(result.createResult(error, data));
   });
 });
 //current courses
