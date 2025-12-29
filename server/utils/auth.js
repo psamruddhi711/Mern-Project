@@ -6,8 +6,7 @@ function authUser(req, res, next) {
     const path = req.url;
 
     // Only bypass LOGIN
-    if (path === '/users/signin')
-       {
+    if (path === '/users/signin'|| path === '/students/register-to-course') {
         return next();
     }
 

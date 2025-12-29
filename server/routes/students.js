@@ -10,18 +10,18 @@ const result = require("../utils/result");
 
 
 router.post("/register-to-course", (req, res) => {
-  const { name, email, course_id, mobile_no } = req.body;
+  const {reg_no, name, email, course_id, mobile_no } = req.body;
 
-  if (!name || !email || !course_id || !mobile_no) {
+  if (!reg_no||!name || !email || !course_id || !mobile_no) {
     return res.send(
-      result.createResult("name, email, course_id, mobile_no are required")
+      result.createResult("reg_no, name, email, course_id, mobile_no are required")
     );
   }
 
   const sql =
-    "INSERT INTO students (name, email, course_id, mobile_no) VALUES (?,?,?,?)";
+    "INSERT INTO students (reg_no, name, email, course_id, mobile_no) VALUES (?,?,?,?,?)";
 
-  pool.query(sql, [name, email, course_id, mobile_no], (error, data) => {
+  pool.query(sql, [reg_no, name, email, course_id, mobile_no], (error, data) => {
     res.send(result.createResult(error, data));
   });
 });
