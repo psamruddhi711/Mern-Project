@@ -5,31 +5,101 @@ const result = require("../utils/result");
 const { checkAuthorization } = require("../utils/auth");
 
 const router = express.Router();
+const videoUtil = require("../utils/video");
+const { authUser, checkAuthorization } = require("../utils/auth");
+const videoController = require("../controllers/video.controller");
+
+
+// Logged-in users
+router.get(
+  "/all-videos",
+  authUser,
+  videoController.getAllVideos
+);
+
+// Admin / Instructor only
+router.post(
+  "/add",
+  authUser,
+  checkAuthorization,
+  videoController.addVideo
+);
+
+router.put(
+  "/update/:videoId",
+  authUser,
+  checkAuthorization,
+  videoController.updateVideo
+);
+
+router.delete(
+  "/delete/:videoId",
+  authUser,
+  checkAuthorization,
+  videoController.deleteVideo
+);
+
+module.exports = router;
+
+
+const videoController = require("../controllers/video.controller");
+const { authUser, checkAuthorization } = require("../utils/auth");
+
+// Public / Authenticated
+router.get("/all-videos", authUser, videoController.getAllVideos);
+
+// Admin / Authorized only
+router.post(
+  "/add",
+  authUser,
+  checkAuthorization,
+  videoController.addVideo
+);
+
+router.put(
+  "/update/:videoId",
+  authUser,
+  checkAuthorization,
+  videoController.updateVideo
+);
+
+router.delete(
+  "/delete/:videoId",
+  authUser,
+  checkAuthorization,
+  videoController.deleteVideo
+);
+
+module.exports = router;
+
+const db = require("../db/pool");
 
 // Videos Api
 /**
  * GET /video/all-videos?courseId=
- * Accessible to logged-in users
  */
-router.get("/all-videos", (req, res) => {
-  const { course_id } = req.body;
+exports.getAllVideos = (req, res) => {
+  const { courseId } = req.query;
 
   const sql = `
-    SELECT *
+    SELECT video_id, course_id, title, description, youtube_url, added_at
     FROM videos
     WHERE course_id = ?
   `;
 
-  pool.query(sql, [course_id], (error, data) => {
-    res.send(result.createResult(error, data));
+  db.query(sql, [courseId], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    res.json(result);
   });
-});
+};
 
 /**
  * POST /video/add
- * Admin / Instructor only
  */
-router.post("/add", checkAuthorization, (req, res) => {
+exports.addVideo = (req, res) => {
   const { video_id, course_id, title, description, youtube_url } = req.body;
 
   const sql = `
@@ -38,51 +108,63 @@ router.post("/add", checkAuthorization, (req, res) => {
     VALUES (?, ?, ?, ?, ?, CURDATE())
   `;
 
-  pool.query(
+  db.query(
     sql,
     [video_id, course_id, title, description, youtube_url],
-    (error, data) => {
-      res.send(result.createResult(error, data));
+    err => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Failed to add video" });
+      }
+      res.json({ message: "Video added successfully" });
     }
   );
+<<<<<<< HEAD
 });
+=======
+};
+>>>>>>> 3749f20e21f502a33d79fb075ab545c169ba3d68
 
 /**
- * PUT /video/update
- * Admin / Instructor only
+ * PUT /video/update/:videoId
  */
-router.put("/update", checkAuthorization, (req, res) => {
-     
-  const { video_id, title, description, youtube_url } = req.body;
+exports.updateVideo = (req, res) => {
+  const { videoId } = req.params;
+  const { course_id, title, description, youtube_url } = req.body;
 
   const sql = `
     UPDATE videos
-    SET title = ?, description = ?, youtube_url = ?
+    SET course_id = ?, title = ?, description = ?, youtube_url = ?
     WHERE video_id = ?
   `;
 
-  pool.query(
+  db.query(
     sql,
-    [title, description, youtube_url, video_id],
-    (error, data) => {
-      res.send(result.createResult(error, data));
+    [course_id, title, description, youtube_url, videoId],
+    err => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Failed to update video" });
+      }
+      res.json({ message: "Video updated successfully" });
     }
   );
-});
-
+};
 
 /**
- * DELETE /video/delete
- * Admin / Instructor only
+ * DELETE /video/delete/:videoId
  */
-router.delete("/delete", checkAuthorization, (req, res) => {
-  const { video_id } = req.body;
+exports.deleteVideo = (req, res) => {
+  const { videoId } = req.params;
 
-  const sql = `DELETE FROM videos WHERE video_id = ?`;
+  const sql = "DELETE FROM videos WHERE video_id = ?";
 
-  pool.query(sql, [video_id], (error, data) => {
-    res.send(result.createResult(error, data));
+  db.query(sql, [videoId], err => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Failed to delete video" });
+    }
+    res.json({ message: "Video deleted successfully" });
   });
-});
+};
 
-module.exports = router;
