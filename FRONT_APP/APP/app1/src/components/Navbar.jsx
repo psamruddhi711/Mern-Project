@@ -1,72 +1,64 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import "./Courses.css";
+import React from "react";
+import { NavLink } from "react-router-dom";
 
-const Courses = () => {
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    fetchCurrentCourses();
-  }, []);
-
-  const fetchCurrentCourses = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:4000/courses/current-courses"
-      );
-
-      if (response.data.status === "success") {
-        setCourses(response.data.data);
-      } else {
-        setError(response.data.error || "Failed to load courses");
-      }
-    } catch (err) {
-      setError("Server error. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return <div className="courses-loader">Loading courses...</div>;
-  }
-
-  if (error) {
-    return <div className="courses-error">{error}</div>;
-  }
-
+function Navbar() {
   return (
-    <div className="courses-container">
-      <h2 className="courses-title">Available Courses</h2>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-2 sticky-top">
+      <div className="container-fluid">
 
-      {courses.length === 0 ? (
-        <p className="no-courses">No active courses available</p>
-      ) : (
-        <div className="courses-grid">
-          {courses.map((course) => (
-            <div className="course-card" key={course.course_id}>
-              <h3>{course.course_name}</h3>
+        {/* Brand */}
+        <NavLink className="navbar-brand fw-bold fs-3 text-warning" to="/home">
+          🚀 Sunbeam
+        </NavLink>
 
-              <p className="course-desc">{course.description}</p>
+        {/* Mobile toggle */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-              <div className="course-info">
-                <span>₹{course.fees}</span>
-                <span>{course.start_date} → {course.end_date}</span>
-              </div>
+        <div className="collapse navbar-collapse" id="navbarNav">
 
-              <p className="expiry">
-                🎥 Video access: {course.video_expiry_days} days
-              </p>
+          {/* Left Links */}
+          <ul className="navbar-nav ms-3">
+            <li className="nav-item">
+              <NavLink className="nav-link fw-semibold" to="/home">
+                Home
+              </NavLink>
+            </li>
 
-              <button className="enroll-btn">View Details</button>
-            </div>
-          ))}
+            <li className="nav-item">
+              <NavLink className="nav-link fw-semibold" to="/courses">
+                Courses
+              </NavLink>
+            </li>
+
+            <li className="nav-item">
+              <NavLink className="nav-link fw-semibold" to="/profile">
+                Profile
+              </NavLink>
+            </li>
+          </ul>
+
+          {/* Right Buttons */}
+          <div className="ms-auto d-flex gap-2">
+            <NavLink to="/signup" className="btn btn-outline-warning">
+              <i className="bi bi-person-plus me-1"></i> Sign Up
+            </NavLink>
+
+            <NavLink to="/login" className="btn btn-warning">
+              <i className="bi bi-box-arrow-in-right me-1"></i> Login
+            </NavLink>
+          </div>
+
         </div>
-      )}
-    </div>
+      </div>
+    </nav>
   );
-};
+}
 
-export default Courses;
+export default Navbar;
