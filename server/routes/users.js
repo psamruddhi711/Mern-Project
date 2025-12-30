@@ -41,7 +41,7 @@ router.post('/signin', (req, res) => {
 
 
 // get details by email (student)
-router.get("/", (req, res) => {
+router.get("/details_by_email", (req, res) => {
   const email = req.headers.email;
   const sql = `SELECT * FROM users WHERE email = ?`;
   pool.query(sql, [email], (error, data) => {
