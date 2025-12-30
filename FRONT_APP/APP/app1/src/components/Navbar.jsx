@@ -3,13 +3,20 @@ import { NavLink } from "react-router-dom";
 
 function Navbar() {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-2 sticky-top">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-1 sticky-top">
+
       <div className="container-fluid">
 
-        {/* Brand */}
-        <NavLink className="navbar-brand fw-bold fs-3 text-warning" to="/home">
-          🚀 Sunbeam
-        </NavLink>
+        {/* Brand: Logo + Text */}
+ <NavLink to="/home" className="navbar-brand d-flex align-items-center gap-2">
+  <img
+    src="/learnsphere-logo.png"
+    alt="LearnSphere Logo"
+    style={{ height: "26px", width: "auto" }}
+  />
+</NavLink>
+
+
 
         {/* Mobile toggle */}
         <button
@@ -23,7 +30,7 @@ function Navbar() {
 
         <div className="collapse navbar-collapse" id="navbarNav">
 
-          {/* Left Links */}
+          {/* Left links */}
           <ul className="navbar-nav ms-3">
             <li className="nav-item">
               <NavLink className="nav-link fw-semibold" to="/home">
@@ -44,14 +51,14 @@ function Navbar() {
             </li>
           </ul>
 
-          {/* Right Buttons */}
-          <div className="ms-auto d-flex gap-2">
-            <NavLink to="/signup" className="btn btn-outline-warning">
-              <i className="bi bi-person-plus me-1"></i> Sign Up
+          {/* Right buttons */}
+          <div className="ms-auto d-flex align-items-center gap-2">
+            <NavLink to="/signup" className="btn btn-sm btn-outline-warning px-3">
+              Sign Up
             </NavLink>
 
-            <NavLink to="/login" className="btn btn-warning">
-              <i className="bi bi-box-arrow-in-right me-1"></i> Login
+            <NavLink to="/login" className="btn btn-sm btn-warning px-3">
+              Login
             </NavLink>
           </div>
 
