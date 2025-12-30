@@ -1,0 +1,23 @@
+/* Smooth hover effect */
+.navbar .nav-link {
+  transition: color 0.2s ease;
+}
+
+.navbar .nav-link:hover {
+  color: #ffc107 !important;
+}
+
+/* Active page highlight */
+.nav-link.active {
+  color: #ffc107 !important;
+  border-bottom: 2px solid #ffc107;
+}
+
+/* Button hover animation */
+.btn {
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
