@@ -186,12 +186,3 @@ router.get("/current-courses", (req, res) => {
     res.send(result.createResult(error, data));
   });
 });
-//current courses
-router.get("/current-courses", (req, res)=>{
-        const sql = `SELECT * FROM courses WHERE CURDATE() BETWEEN start_date AND end_date`;
-    db.query(sql, (error, data)=>{    
-        res.send(result.createResult(error,data));
-
-    });
-    });
-module.exports = router;
