@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import "./Courses.css";
+import React from "react";
+import { NavLink } from "react-router-dom";
 
 function Navbar() {
   return (
@@ -19,21 +18,20 @@ function Navbar() {
 
 
 
-      if (response.data.status === "success") {
-        setCourses(response.data.data);
-      } else {
-        setError(response.data.error || "Failed to load courses");
-      }
-    } catch (err) {
-      setError("Server error. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
+        {/* Brand */}
+        <NavLink className="navbar-brand fw-bold fs-3 text-warning" to="/home">
+          🚀 Sunbeam
+        </NavLink>
 
-  if (loading) {
-    return <div className="courses-loader">Loading courses...</div>;
-  }
+        {/* Mobile toggle */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
           {/* Left links */}
           <ul className="navbar-nav ms-3">
@@ -43,15 +41,18 @@ function Navbar() {
               </NavLink>
             </li>
 
-      {courses.length === 0 ? (
-        <p className="no-courses">No active courses available</p>
-      ) : (
-        <div className="courses-grid">
-          {courses.map((course) => (
-            <div className="course-card" key={course.course_id}>
-              <h3>{course.course_name}</h3>
+            <li className="nav-item">
+              <NavLink className="nav-link fw-semibold" to="/courses">
+                Courses
+              </NavLink>
+            </li>
 
-              <p className="course-desc">{course.description}</p>
+            <li className="nav-item">
+              <NavLink className="nav-link fw-semibold" to="/profile">
+                Profile
+              </NavLink>
+            </li>
+          </ul>
 
           {/* Right buttons */}
           <div className="ms-auto d-flex align-items-center gap-2">
@@ -64,13 +65,10 @@ function Navbar() {
             </NavLink>
           </div>
 
-              <button className="enroll-btn">View Details</button>
-            </div>
-          ))}
         </div>
-      )}
-    </div>
+      </div>
+    </nav>
   );
-};
+}
 
-export default Courses;
+export default Navbar;
