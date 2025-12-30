@@ -1,26 +1,64 @@
-import React from 'react'
-import {Link} from 'react-router'
+import React from "react";
+import { NavLink } from "react-router-dom";
+
 function Navbar() {
   return (
-    <div>
-      <nav className="navbar navbar-inverse">
-  <div className="container-fluid">
-    <div className="navbar-header">
-      <Link className="navbar-brand" href="#">WebSiteName</Link>
-    </div>
-    <ul className="nav navbar-nav">
-      <li className="active"><Link to="/home">Home</Link></li>
-      <li><Link to="/profile">Profile</Link></li>
-      <li><Link to="/courses"> courses</Link></li>
-    </ul>
-    <ul className="nav navbar-nav navbar-right">
-      <li><Link to="#"><span className="glyphicon glyphicon-user"></span> Sign Up</Link></li>
-      <li><Link to="#"><span className="glyphicon glyphicon-log-in"></span> Login</Link></li>
-    </ul>
-  </div>
-</nav>
-    </div>
-  )
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-2 sticky-top">
+      <div className="container-fluid">
+
+        {/* Brand */}
+        <NavLink className="navbar-brand fw-bold fs-3 text-warning" to="/home">
+          🚀 Sunbeam
+        </NavLink>
+
+        {/* Mobile toggle */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+
+        <div className="collapse navbar-collapse" id="navbarNav">
+
+          {/* Left Links */}
+          <ul className="navbar-nav ms-3">
+            <li className="nav-item">
+              <NavLink className="nav-link fw-semibold" to="/home">
+                Home
+              </NavLink>
+            </li>
+
+            <li className="nav-item">
+              <NavLink className="nav-link fw-semibold" to="/courses">
+                Courses
+              </NavLink>
+            </li>
+
+            <li className="nav-item">
+              <NavLink className="nav-link fw-semibold" to="/profile">
+                Profile
+              </NavLink>
+            </li>
+          </ul>
+
+          {/* Right Buttons */}
+          <div className="ms-auto d-flex gap-2">
+            <NavLink to="/signup" className="btn btn-outline-warning">
+              <i className="bi bi-person-plus me-1"></i> Sign Up
+            </NavLink>
+
+            <NavLink to="/login" className="btn btn-warning">
+              <i className="bi bi-box-arrow-in-right me-1"></i> Login
+            </NavLink>
+          </div>
+
+        </div>
+      </div>
+    </nav>
+  );
 }
 
-export default Navbar
+export default Navbar;
