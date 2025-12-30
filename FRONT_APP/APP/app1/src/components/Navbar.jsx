@@ -2,20 +2,22 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Courses.css";
 
-const Courses = () => {
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+function Navbar() {
+  return (
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-1 sticky-top">
 
-  useEffect(() => {
-    fetchCurrentCourses();
-  }, []);
+      <div className="container-fluid">
 
-  const fetchCurrentCourses = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:4000/courses/current-courses"
-      );
+        {/* Brand: Logo + Text */}
+ <NavLink to="/home" className="navbar-brand d-flex align-items-center gap-2">
+  <img
+    src="/learnsphere-logo.png"
+    alt="LearnSphere Logo"
+    style={{ height: "26px", width: "auto" }}
+  />
+</NavLink>
+
+
 
       if (response.data.status === "success") {
         setCourses(response.data.data);
@@ -33,13 +35,13 @@ const Courses = () => {
     return <div className="courses-loader">Loading courses...</div>;
   }
 
-  if (error) {
-    return <div className="courses-error">{error}</div>;
-  }
-
-  return (
-    <div className="courses-container">
-      <h2 className="courses-title">Available Courses</h2>
+          {/* Left links */}
+          <ul className="navbar-nav ms-3">
+            <li className="nav-item">
+              <NavLink className="nav-link fw-semibold" to="/home">
+                Home
+              </NavLink>
+            </li>
 
       {courses.length === 0 ? (
         <p className="no-courses">No active courses available</p>
@@ -51,14 +53,16 @@ const Courses = () => {
 
               <p className="course-desc">{course.description}</p>
 
-              <div className="course-info">
-                <span>₹{course.fees}</span>
-                <span>{course.start_date} → {course.end_date}</span>
-              </div>
+          {/* Right buttons */}
+          <div className="ms-auto d-flex align-items-center gap-2">
+            <NavLink to="/signup" className="btn btn-sm btn-outline-warning px-3">
+              Sign Up
+            </NavLink>
 
-              <p className="expiry">
-                🎥 Video access: {course.video_expiry_days} days
-              </p>
+            <NavLink to="/login" className="btn btn-sm btn-warning px-3">
+              Login
+            </NavLink>
+          </div>
 
               <button className="enroll-btn">View Details</button>
             </div>
