@@ -12,7 +12,7 @@ const router = express.Router();
  * Accessible to logged-in users
  */
 router.get("/all-videos", (req, res) => {
-  const { course_id } = req.body;
+  const { course_id } = req.query;
 
   const sql = `
     SELECT *
