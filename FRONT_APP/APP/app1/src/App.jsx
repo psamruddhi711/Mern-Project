@@ -5,6 +5,7 @@ import Profile from "./pages/Profile";
 import AdminCourses from "./pages/AdminCourses";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Register from "./pages/Register";
 
 function App() {
   return (
@@ -15,9 +16,12 @@ function App() {
       <Route path="/admin/courses" element={<AdminCourses />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/register/:courseId" element={<Register />} />
       <Route path="*" element={<h2>Page Not Found</h2>} />
     </Routes>
   );
 }
+// 
+
 
 export default App;
