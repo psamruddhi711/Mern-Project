@@ -1,11 +1,10 @@
 import axios from "axios";
 
-const courseApi = axios.create({
-  baseURL: "http://localhost:4000/course"
+const videoApi = axios.create({
+  baseURL: "http://localhost:4000/video"
 });
 
-
-courseApi.interceptors.request.use(
+videoApi.interceptors.request.use(
   (req) => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -16,4 +15,4 @@ courseApi.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-export default courseApi;
+export default videoApi;
