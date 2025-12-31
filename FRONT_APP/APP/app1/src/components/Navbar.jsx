@@ -7,7 +7,6 @@ function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-2 sticky-top">
       <div className="container-fluid">
-
         <NavLink
           to="/home"
           className="navbar-brand fw-bold text-warning fs-4"
@@ -25,7 +24,6 @@ function Navbar() {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarNav">
-
           <ul className="navbar-nav ms-3">
             <li className="nav-item">
               <NavLink className="nav-link" to="/home">Home</NavLink>
@@ -35,6 +33,10 @@ function Navbar() {
             </li>
             <li className="nav-item">
               <NavLink className="nav-link" to="/about">About</NavLink>
+            </li>
+            {/* New Video Button Added Here */}
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/videos">Videos</NavLink>
             </li>
           </ul>
 
@@ -65,7 +67,6 @@ function Navbar() {
               </>
             )}
           </div>
-
         </div>
       </div>
     </nav>
