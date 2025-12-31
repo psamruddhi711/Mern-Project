@@ -1,47 +1,27 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Navbar from "../components/Navbar";
 import "../styles/courses.css";
+import { useNavigate } from "react-router";
 
 const Courses = () => {
-  // STATIC DATA (can be replaced with API later)
-  const [courses, setCourses] = useState([
-    {
-      id: 1,
-      name: "MERN Stack Development",
-      desc: "MongoDB, Express, React, Node.js with real projects",
-      fees: 45000,
-      duration: "6 Months",
-      image:
-        "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
-    },
-    {
-      id: 2,
-      name: "Java Full Stack",
-      desc: "Core Java, Spring Boot, Hibernate & React",
-      fees: 40000,
-      duration: "5 Months",
-      image:
-        "https://images.unsplash.com/photo-1517430816045-df4b7de1cd0a",
-    },
-    {
-      id: 3,
-      name: "Python & Data Science",
-      desc: "Python, ML, NumPy, Pandas, Data Analysis",
-      fees: 50000,
-      duration: "6 Months",
-      image:
-        "https://images.unsplash.com/photo-1555949963-aa79dcee981c",
-    },
-    {
-      id: 4,
-      name: "DevOps with AWS",
-      desc: "Docker, Kubernetes, CI/CD & AWS Cloud",
-      fees: 55000,
-      duration: "4 Months",
-      image:
-        "https://images.unsplash.com/photo-1518770660439-4636190af475",
-    },
-  ]);
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate=useNavigate()
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/course/all-courses")
+      .then((res) => {
+        if (res.data.status === "success") {
+          setCourses(res.data.data);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching courses", err);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <>
@@ -55,32 +35,43 @@ const Courses = () => {
 
       {/* COURSES LIST */}
       <section className="container my-5">
-        <div className="row g-4">
-          {courses.map((course) => (
-            <div className="col-md-6 col-lg-4" key={course.id}>
-              <div className="course-card">
-                <img src={course.image} alt={course.name} />
+        {loading ? (
+          <h4 className="text-center">Loading courses...</h4>
+        ) : (
+          <div className="row g-4">
+            {courses.map((course) => (
+              <div className="col-md-6 col-lg-4" key={course.course_id}>
+                <div className="course-card">
+                  {/* Static image (or add image column later) */}
+                  <img
+                    src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d"
+                    alt={course.course_name}
+                  />
 
-                <div className="course-body">
-                  <h5>{course.name}</h5>
-                  <p>{course.desc}</p>
+                  <div className="course-body">
+                    <h5>{course.course_name}</h5>
+                    <p>{course.description}</p>
 
-                  <div className="course-info">
-                    <span>⏱ {course.duration}</span>
-                    <span>⭐ 4.5</span>
-                  </div>
+                    <div className="course-info">
+                      <span>
+                        ⏱{" "}
+                        {course.start_date} – {course.end_date}
+                      </span>
+                      <span>⭐ 4.5</span>
+                    </div>
 
-                  <div className="course-footer">
-                    <strong>₹{course.fees}</strong>
-                    <button className="btn btn-primary btn-sm">
-                      Enroll Now
-                    </button>
+                    <div className="course-footer">
+                      <strong>₹{course.fees}</strong>
+                      <button className="btn btn-primary btn-sm"  onClick={() => navigate(`/register/${course.course_id}`)}>
+                        Enroll Now
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
     </>
   );
