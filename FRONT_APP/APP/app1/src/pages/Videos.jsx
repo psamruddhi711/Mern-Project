@@ -27,7 +27,7 @@ const VideoPage = () => {
           <div className="ratio ratio-16x9 shadow rounded overflow-hidden bg-black">
             {/* Sunbeam YouTube URL Integrated Here */}
             <iframe
-              src="https://www.youtube.com/embed/videoseries?list=UU7-GfIOf_n6Bgh6F6_uXmew" 
+              src="https://www.youtube.com/embed/aFGbP_UDs30?si=A1lrWUQFsnaq6s3C" 
               title="Sunbeam Lectures"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
