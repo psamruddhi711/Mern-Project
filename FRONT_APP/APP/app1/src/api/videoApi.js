@@ -1,18 +1,21 @@
-import axios from "axios";
+import axios from "./axiosConfig";
 
-const videoApi = axios.create({
-  baseURL: "http://localhost:4000/video"
-});
+const videoApi = {
+  getVideosByCourse: (course_id) =>
+    axios.get("/video/all-videos", {
+      data: { course_id },
+    }),
 
-videoApi.interceptors.request.use(
-  (req) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      req.headers.Authorization = `Bearer ${token}`;
-    }
-    return req;
-  },
-  (error) => Promise.reject(error)
-);
+  addVideo: (data) =>
+    axios.post("/video/add", data),
+
+  updateVideo: (data) =>
+    axios.put("/video/update", data),
+
+  deleteVideo: (video_id) =>
+    axios.delete("/video/delete", {
+      data: { video_id },
+    }),
+};
 
 export default videoApi;

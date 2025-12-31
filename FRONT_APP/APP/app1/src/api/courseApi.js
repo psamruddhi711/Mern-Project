@@ -1,19 +1,19 @@
-import axios from "axios";
+import axios from "./axiosConfig";
 
-const courseApi = axios.create({
-  baseURL: "http://localhost:4000/course"
-});
+const courseApi = {
+  getAllCourses: () => axios.get("/course/all-courses"),
 
+  addCourse: (data) =>
+    axios.post("/course/add", data),
 
-courseApi.interceptors.request.use(
-  (req) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      req.headers.Authorization = `Bearer ${token}`;
-    }
-    return req;
-  },
-  (error) => Promise.reject(error)
-);
+  updateCourse: (id, data) =>
+    axios.put(`/course/update/${id}`, data),
+
+  deleteCourse: (id) =>
+    axios.delete(`/course/delete/${id}`),
+
+  currentCourses: () =>
+    axios.get("/course/current-courses"),
+};
 
 export default courseApi;
