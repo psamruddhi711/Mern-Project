@@ -31,6 +31,7 @@ axios
   .then((res) => {
     console.log("API response:", res.data);
 
+    // Register
     if (res.data.status === "success") {
       alert("Registration Successful 🎉");
       navigate("/courses");
