@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import courseApi from "../api/courseApi";
 
 const AdminCourses = () => {
   const [courses, setCourses] = useState([]);
-  const [action, setAction] = useState("VIEW"); // VIEW | ADD | UPDATE | DELETE
+  const [action, setAction] = useState("VIEW");
   const [editingId, setEditingId] = useState(null);
   const [message, setMessage] = useState("");
 
@@ -16,8 +16,6 @@ const AdminCourses = () => {
     videoExpireDays: ""
   });
 
-  const token = localStorage.getItem("token");
-
   useEffect(() => {
     fetchAllCourses();
   }, []);
@@ -25,11 +23,13 @@ const AdminCourses = () => {
   // 🔹 FETCH COURSES
   const fetchAllCourses = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/courses/all-courses");
+      const res = await courseApi.get("/all-courses");
       if (res.data.status === "success") {
         setCourses(res.data.data);
+      } else {
+        setMessage(res.data.error);
       }
-    } catch (err) {
+    } catch {
       setMessage("Failed to load courses");
     }
   };
@@ -39,41 +39,32 @@ const AdminCourses = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // 🔹 SUBMIT (ADD / UPDATE)
+  // 🔹 ADD / UPDATE
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       if (action === "ADD") {
-        await axios.post(
-          "http://localhost:4000/courses/add",
-          formData,
-          {
-            headers: { Authorization: `Bearer ${token}` }
-          }
-        );
-        setMessage("Course added successfully");
+        const res = await courseApi.post("/add", formData);
+        setMessage(res.data.data?.message || "Course added");
       }
 
       if (action === "UPDATE") {
-        await axios.put(
-          `http://localhost:4000/courses/update/${editingId}`,
-          formData,
-          {
-            headers: { Authorization: `Bearer ${token}` }
-          }
+        const res = await courseApi.put(
+          `/update/${editingId}`,
+          formData
         );
-        setMessage("Course updated successfully");
+        setMessage(res.data.data?.message || "Course updated");
       }
 
       resetForm();
       fetchAllCourses();
-    } catch (err) {
+    } catch {
       setMessage("Operation failed");
     }
   };
 
-  // 🔹 EDIT COURSE
+  // 🔹 EDIT
   const handleEdit = (course) => {
     setAction("UPDATE");
     setEditingId(course.course_id);
@@ -81,26 +72,21 @@ const AdminCourses = () => {
       courseName: course.course_name,
       description: course.description,
       fees: course.fees,
-      startDate: course.start_date,
-      endDate: course.end_date,
+      startDate: course.start_date.split("T")[0],
+      endDate: course.end_date.split("T")[0],
       videoExpireDays: course.video_expiry_days
     });
   };
 
-  // 🔹 DELETE COURSE
+  // 🔹 DELETE
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this course?")) return;
 
     try {
-      await axios.delete(
-        `http://localhost:4000/courses/delete/${id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
+      await courseApi.delete(`/delete/${id}`);
       setMessage("Course deleted successfully");
       fetchAllCourses();
-    } catch (err) {
+    } catch {
       setMessage("Delete failed");
     }
   };
@@ -116,157 +102,127 @@ const AdminCourses = () => {
       videoExpireDays: ""
     });
     setEditingId(null);
+    setAction("VIEW");
   };
 
   return (
     <div className="container my-5">
       <h2 className="text-center mb-4">Admin Course Management</h2>
 
-      {/* 🔽 ACTION DROPDOWN */}
-      <div className="mb-4">
-        <select
-          className="form-select"
-          value={action}
-          onChange={(e) => setAction(e.target.value)}
-        >
-          <option value="VIEW">View All Courses</option>
-          <option value="ADD">Add Course</option>
-          <option value="UPDATE">Update Course</option>
-          <option value="DELETE">Delete Course</option>
-        </select>
-      </div>
+      <select
+        className="form-select mb-4"
+        value={action}
+        onChange={(e) => setAction(e.target.value)}
+      >
+        <option value="VIEW">View Courses</option>
+        <option value="ADD">Add Course</option>
+        <option value="UPDATE">Update Course</option>
+        <option value="DELETE">Delete Course</option>
+      </select>
 
       {message && <div className="alert alert-info">{message}</div>}
 
-      {/* ➕ ADD / ✏️ UPDATE FORM */}
       {(action === "ADD" || action === "UPDATE") && (
-        <form className="card p-4 mb-5" onSubmit={handleSubmit}>
-          <h5>{action === "ADD" ? "Add Course" : "Update Course"}</h5>
+        <form className="card p-4 mb-4" onSubmit={handleSubmit}>
+          <input
+            className="form-control mb-2"
+            name="courseName"
+            placeholder="Course Name"
+            value={formData.courseName}
+            onChange={handleChange}
+            required
+          />
+          <input
+            className="form-control mb-2"
+            name="fees"
+            type="number"
+            placeholder="Fees"
+            value={formData.fees}
+            onChange={handleChange}
+            required
+          />
+          <textarea
+            className="form-control mb-2"
+            name="description"
+            placeholder="Description"
+            value={formData.description}
+            onChange={handleChange}
+            required
+          />
+          <input
+            className="form-control mb-2"
+            type="date"
+            name="startDate"
+            value={formData.startDate}
+            onChange={handleChange}
+            required
+          />
+          <input
+            className="form-control mb-2"
+            type="date"
+            name="endDate"
+            value={formData.endDate}
+            onChange={handleChange}
+            required
+          />
+          <input
+            className="form-control mb-2"
+            type="number"
+            min="1"
+            name="videoExpireDays"
+            placeholder="Video Expiry Days"
+            value={formData.videoExpireDays}
+            onChange={handleChange}
+            required
+          />
 
-          <div className="row g-3">
-            <div className="col-md-6">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Course Name"
-                name="courseName"
-                value={formData.courseName}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="col-md-6">
-              <input
-                type="number"
-                className="form-control"
-                placeholder="Fees"
-                name="fees"
-                value={formData.fees}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="col-12">
-              <textarea
-                className="form-control"
-                placeholder="Description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="col-md-4">
-              <input
-                type="date"
-                className="form-control"
-                name="startDate"
-                value={formData.startDate}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="col-md-4">
-              <input
-                type="date"
-                className="form-control"
-                name="endDate"
-                value={formData.endDate}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="col-md-4">
-              <input
-                type="number"
-                min="1"
-                className="form-control"
-                placeholder="Video Expiry Days"
-                name="videoExpireDays"
-                value={formData.videoExpireDays}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-
-          <button className="btn btn-success mt-3">
+          <button className="btn btn-success">
             {action === "ADD" ? "Add Course" : "Update Course"}
           </button>
         </form>
       )}
 
-      {/* 📋 COURSES TABLE */}
-      {(action === "VIEW" || action === "DELETE" || action === "UPDATE") && (
-        <div className="table-responsive">
-          <table className="table table-bordered table-hover">
-            <thead className="table-dark">
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Fees</th>
-                <th>Duration</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {courses.map((c) => (
-                <tr key={c.course_id}>
-                  <td>{c.course_id}</td>
-                  <td>{c.course_name}</td>
-                  <td>₹{c.fees}</td>
-                  <td>
-                    {c.start_date} → {c.end_date}
-                  </td>
-                  <td>
-                    {action === "UPDATE" && (
-                      <button
-                        className="btn btn-warning btn-sm me-2"
-                        onClick={() => handleEdit(c)}
-                      >
-                        Edit
-                      </button>
-                    )}
-                    {action === "DELETE" && (
-                      <button
-                        className="btn btn-danger btn-sm"
-                        onClick={() => handleDelete(c.course_id)}
-                      >
-                        Delete
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <table className="table table-bordered">
+        <thead className="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Fees</th>
+            <th>Duration</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {courses.map((c) => (
+            <tr key={c.course_id}>
+              <td>{c.course_id}</td>
+              <td>{c.course_name}</td>
+              <td>₹{c.fees}</td>
+              <td>
+                {c.start_date.split("T")[0]} → {c.end_date.split("T")[0]}
+              </td>
+              <td>
+                {action === "UPDATE" && (
+                  <button
+                    className="btn btn-warning btn-sm me-2"
+                    onClick={() => handleEdit(c)}
+                  >
+                    Edit
+                  </button>
+                )}
+                {action === "DELETE" && (
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleDelete(c.course_id)}
+                  >
+                    Delete
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
