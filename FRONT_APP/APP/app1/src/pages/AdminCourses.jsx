@@ -13,7 +13,7 @@ const AdminCourses = () => {
     fees: "",
     startDate: "",
     endDate: "",
-    videoExpireDays: ""
+    videoExpireDays: "",
   });
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const AdminCourses = () => {
   // 🔹 FETCH COURSES
   const fetchAllCourses = async () => {
     try {
-      const res = await courseApi.get("/all-courses");
+      const res = await courseApi.getAllCourses();
       if (res.data.status === "success") {
         setCourses(res.data.data);
       } else {
@@ -45,15 +45,12 @@ const AdminCourses = () => {
 
     try {
       if (action === "ADD") {
-        const res = await courseApi.post("/add", formData);
+        const res = await courseApi.addCourse(formData);
         setMessage(res.data.data?.message || "Course added");
       }
 
       if (action === "UPDATE") {
-        const res = await courseApi.put(
-          `/update/${editingId}`,
-          formData
-        );
+        const res = await courseApi.updateCourse(editingId, formData);
         setMessage(res.data.data?.message || "Course updated");
       }
 
@@ -74,7 +71,7 @@ const AdminCourses = () => {
       fees: course.fees,
       startDate: course.start_date.split("T")[0],
       endDate: course.end_date.split("T")[0],
-      videoExpireDays: course.video_expiry_days
+      videoExpireDays: course.video_expiry_days,
     });
   };
 
@@ -83,7 +80,7 @@ const AdminCourses = () => {
     if (!window.confirm("Delete this course?")) return;
 
     try {
-      await courseApi.delete(`/delete/${id}`);
+      await courseApi.deleteCourse(id);
       setMessage("Course deleted successfully");
       fetchAllCourses();
     } catch {
@@ -99,7 +96,7 @@ const AdminCourses = () => {
       fees: "",
       startDate: "",
       endDate: "",
-      videoExpireDays: ""
+      videoExpireDays: "",
     });
     setEditingId(null);
     setAction("VIEW");
@@ -199,7 +196,8 @@ const AdminCourses = () => {
               <td>{c.course_name}</td>
               <td>₹{c.fees}</td>
               <td>
-                {c.start_date.split("T")[0]} → {c.end_date.split("T")[0]}
+                {c.start_date.split("T")[0]} →{" "}
+                {c.end_date.split("T")[0]}
               </td>
               <td>
                 {action === "UPDATE" && (
