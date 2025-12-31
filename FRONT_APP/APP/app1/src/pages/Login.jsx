@@ -15,12 +15,12 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      // ✅ hash password (backend expects hashed password)
+      // hash password (backend expects hashed password)
       const hashedPassword = CryptoJS.SHA256(password).toString();
 
       const res = await userApi.signin({
         email,
-        password: hashedPassword,
+        password: password,
       });
 
       if (res.data.status === "success") {
