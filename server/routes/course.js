@@ -94,4 +94,4 @@ router.delete("/delete/:courseId", checkAuthorization, (req, res) => {
   );
 });
 
-module.exports = router; // ✅ THIS LINE FIXES EVERYTHING
+module.exports = router; 
