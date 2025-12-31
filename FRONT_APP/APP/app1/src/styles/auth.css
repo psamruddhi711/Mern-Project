@@ -1,0 +1,108 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #f4f6f8;
+}
+
+.app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.auth-card {
+  background: white;
+  width: 380px;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.auth-card h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Role toggle */
+.role-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.role-toggle button {
+  padding: 8px 18px;
+  border: 1px solid #1677ff;
+  background: white;
+  color: #1677ff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.role-toggle .active {
+  background: #1677ff;
+  color: white;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 20px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 20px;
+}
+
+.tabs span {
+  cursor: pointer;
+  padding-bottom: 8px;
+}
+
+.tabs .active {
+  color: #1677ff;
+  border-bottom: 2px solid #1677ff;
+}
+
+/* Form */
+.form label {
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 12px;
+  display: block;
+}
+
+.form input,
+.form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.form textarea {
+  resize: none;
+  height: 70px;
+}
+
+.form button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  background: #1677ff;
+  border: none;
+  color: white;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.demo {
+  margin-top: 15px;
+  font-size: 13px;
+  color: #555;
+}
