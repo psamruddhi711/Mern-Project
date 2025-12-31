@@ -15,7 +15,7 @@ const app = express();
 
 // middlewares
 app.use(express.json());
-app.use(authUser);
+//app.use(authUser);
 
 app.use("/admin", adminRouter);
 app.use("/course", courseRouter);

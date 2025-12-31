@@ -3,27 +3,25 @@ import { NavLink } from "react-router-dom";
 
 function Navbar() {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-1 sticky-top">
-
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-2 sticky-top">
       <div className="container-fluid">
 
-        {/* Brand: Logo + Text */}
- <NavLink to="/home" className="navbar-brand d-flex align-items-center gap-2">
-  <img
-    src="/learnsphere-logo.png"
-    alt="LearnSphere Logo"
-    style={{ height: "26px", width: "auto" }}
-  />
-</NavLink>
-
-
-
-        {/* Brand */}
-        <NavLink className="navbar-brand fw-bold fs-3 text-warning" to="/home">
-          🚀 Sunbeam
+        {/* Brand: Logo inside div */}
+        <NavLink
+          to="/home"
+          className="navbar-brand d-flex align-items-center gap-2 fw-bold text-warning fs-4"
+        >
+          <div className="logo-wrapper">
+            <img
+              src="/learnsphere-logo.png"
+              alt=""
+              className="logo-img"
+            />
+          </div>
+          LearnSphere
         </NavLink>
 
-        {/* Mobile toggle */}
+        {/* Mobile Toggle */}
         <button
           className="navbar-toggler"
           type="button"
@@ -33,7 +31,10 @@ function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-          {/* Left links */}
+        {/* Navbar Content */}
+        <div className="collapse navbar-collapse" id="navbarNav">
+          
+          {/* Left Links */}
           <ul className="navbar-nav ms-3">
             <li className="nav-item">
               <NavLink className="nav-link fw-semibold" to="/home">
@@ -47,19 +48,19 @@ function Navbar() {
               </NavLink>
             </li>
 
+            {/* ✅ ABOUT US */}
             <li className="nav-item">
-              <NavLink className="nav-link fw-semibold" to="/profile">
-                Profile
+              <NavLink className="nav-link fw-semibold" to="/about">
+                About Us
               </NavLink>
             </li>
           </ul>
 
-          {/* Right buttons */}
-          <div className="ms-auto d-flex align-items-center gap-2">
+          {/* Right Buttons */}
+          <div className="ms-auto d-flex gap-2">
             <NavLink to="/signup" className="btn btn-sm btn-outline-warning px-3">
               Sign Up
             </NavLink>
-
             <NavLink to="/login" className="btn btn-sm btn-warning px-3">
               Login
             </NavLink>
