@@ -17,7 +17,7 @@ function App() {
       <Route path="/admin/courses" element={<AdminCourses />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-      {/* <Route path="/register/:courseId" element={<Register />} /> */}
+      <Route path="/register/:courseId" element={<Register />} />
       <Route path="/Videos" element={<VideoPage />} />
       <Route path="*" element={<h2>Page Not Found</h2>} />
     </Routes>
