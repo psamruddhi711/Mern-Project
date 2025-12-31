@@ -186,3 +186,5 @@ router.get("/current-courses", (req, res) => {
     res.send(result.createResult(error, data));
   });
 });
+
+module.exports = router;
