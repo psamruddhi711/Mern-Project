@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 import courseApi from "../api/courseApi";
 
+/* =========================
+   Helper: MySQL Date Format
+   Converts any date to YYYY-MM-DD
+========================= */
+const formatDateForMySQL = (date) => {
+  if (!date) return "";
+  const d = new Date(date);
+  return d.toISOString().split("T")[0];
+};
+
 const AdminCourses = () => {
   const [courses, setCourses] = useState([]);
   const [action, setAction] = useState("VIEW");
@@ -16,11 +26,13 @@ const AdminCourses = () => {
     videoExpireDays: "",
   });
 
+  /* =========================
+     FETCH ALL COURSES
+  ========================= */
   useEffect(() => {
     fetchAllCourses();
   }, []);
 
-  // 🔹 FETCH COURSES
   const fetchAllCourses = async () => {
     try {
       const res = await courseApi.getAllCourses();
@@ -29,53 +41,70 @@ const AdminCourses = () => {
       } else {
         setMessage(res.data.error);
       }
-    } catch {
+    } catch (err) {
       setMessage("Failed to load courses");
     }
   };
 
-  // 🔹 HANDLE INPUT
+  /* =========================
+     INPUT HANDLER
+  ========================= */
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // 🔹 ADD / UPDATE
+  /* =========================
+     ADD / UPDATE COURSE
+  ========================= */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      // 🔥 FIX: Convert dates to MySQL format
+      const payload = {
+        ...formData,
+        startDate: formatDateForMySQL(formData.startDate),
+        endDate: formatDateForMySQL(formData.endDate),
+      };
+
       if (action === "ADD") {
-        const res = await courseApi.addCourse(formData);
-        setMessage(res.data.data?.message || "Course added");
+        await courseApi.addCourse(payload);
+        setMessage("Course added successfully");
       }
 
       if (action === "UPDATE") {
-        const res = await courseApi.updateCourse(editingId, formData);
-        setMessage(res.data.data?.message || "Course updated");
+        await courseApi.updateCourse(editingId, payload);
+        setMessage("Course updated successfully");
       }
 
       resetForm();
       fetchAllCourses();
-    } catch {
-      setMessage("Operation failed");
+    } catch (err) {
+      console.error(err);
+      setMessage("Operation failed (Check date format)");
     }
   };
 
-  // 🔹 EDIT
+  /* =========================
+     EDIT COURSE
+  ========================= */
   const handleEdit = (course) => {
     setAction("UPDATE");
     setEditingId(course.course_id);
+
     setFormData({
       courseName: course.course_name,
       description: course.description,
       fees: course.fees,
-      startDate: course.start_date.split("T")[0],
-      endDate: course.end_date.split("T")[0],
+      startDate: course.start_date.split("T")[0], // YYYY-MM-DD
+      endDate: course.end_date.split("T")[0],     // YYYY-MM-DD
       videoExpireDays: course.video_expiry_days,
     });
   };
 
-  // 🔹 DELETE
+  /* =========================
+     DELETE COURSE
+  ========================= */
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this course?")) return;
 
@@ -83,12 +112,15 @@ const AdminCourses = () => {
       await courseApi.deleteCourse(id);
       setMessage("Course deleted successfully");
       fetchAllCourses();
-    } catch {
+    } catch (err) {
+      console.error(err);
       setMessage("Delete failed");
     }
   };
 
-  // 🔹 RESET
+  /* =========================
+     RESET FORM
+  ========================= */
   const resetForm = () => {
     setFormData({
       courseName: "",
@@ -102,6 +134,9 @@ const AdminCourses = () => {
     setAction("VIEW");
   };
 
+  /* =========================
+     UI
+  ========================= */
   return (
     <div className="container my-5">
       <h2 className="text-center mb-4">Admin Course Management</h2>
@@ -129,6 +164,7 @@ const AdminCourses = () => {
             onChange={handleChange}
             required
           />
+
           <input
             className="form-control mb-2"
             name="fees"
@@ -138,6 +174,7 @@ const AdminCourses = () => {
             onChange={handleChange}
             required
           />
+
           <textarea
             className="form-control mb-2"
             name="description"
@@ -146,6 +183,7 @@ const AdminCourses = () => {
             onChange={handleChange}
             required
           />
+
           <input
             className="form-control mb-2"
             type="date"
@@ -154,6 +192,7 @@ const AdminCourses = () => {
             onChange={handleChange}
             required
           />
+
           <input
             className="form-control mb-2"
             type="date"
@@ -162,8 +201,9 @@ const AdminCourses = () => {
             onChange={handleChange}
             required
           />
+
           <input
-            className="form-control mb-2"
+            className="form-control mb-3"
             type="number"
             min="1"
             name="videoExpireDays"
@@ -173,7 +213,7 @@ const AdminCourses = () => {
             required
           />
 
-          <button className="btn btn-success">
+          <button className="btn btn-success w-100">
             {action === "ADD" ? "Add Course" : "Update Course"}
           </button>
         </form>
