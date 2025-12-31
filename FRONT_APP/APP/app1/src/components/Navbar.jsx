@@ -13,7 +13,7 @@ function Navbar() {
         >
           <div className="logo-wrapper">
             <img
-              src="learnsphere-logo.png"
+              src="/learnsphere-logo.png"
               alt=""
               className="logo-img"
             />
@@ -33,6 +33,7 @@ function Navbar() {
 
         {/* Navbar Content */}
         <div className="collapse navbar-collapse" id="navbarNav">
+          
           {/* Left Links */}
           <ul className="navbar-nav ms-3">
             <li className="nav-item">
@@ -40,14 +41,17 @@ function Navbar() {
                 Home
               </NavLink>
             </li>
+
             <li className="nav-item">
               <NavLink className="nav-link fw-semibold" to="/courses">
                 Courses
               </NavLink>
             </li>
+
+            {/* ✅ ABOUT US */}
             <li className="nav-item">
-              <NavLink className="nav-link fw-semibold" to="/profile">
-                Profile
+              <NavLink className="nav-link fw-semibold" to="/about">
+                About Us
               </NavLink>
             </li>
           </ul>
@@ -61,6 +65,7 @@ function Navbar() {
               Login
             </NavLink>
           </div>
+
         </div>
       </div>
     </nav>

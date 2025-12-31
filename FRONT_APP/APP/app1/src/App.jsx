@@ -1,33 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Home from "./pages/Home"
-import Profile from "./pages/Profile"
-import Courses from "./pages/Courses"
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import Courses from "./pages/Courses";
 import AdminCourses from "./pages/AdminCourses";
-import { Route, Routes } from "react-router"
+import About from "./pages/About";
 
-
+import { Route, Routes } from "react-router-dom";
 
 function App() {
- 
   return (
-    
-<>
-<Routes>
-<Route path="/admin/courses" element={<AdminCourses />} />
-<Route path='/home' element={<Home/>} /> 
-<Route path='/profile' element={<Profile/>} />
-<Route path='/courses' element={<Courses/>} />
-<Route path="*" element={<h2>Page Not Found</h2>} />
+    <>
+      <Routes>
+        {/* HOME */}
+        <Route path="/home" element={<Home />} />
 
+        {/* COURSES */}
+        <Route path="/courses" element={<Courses />} />
 
-  </Routes>
+        {/* ABOUT US */}
+        <Route path="/about" element={<About />} />
 
+        {/* PROFILE */}
+        <Route path="/profile" element={<Profile />} />
 
-</>
-  )
+        {/* ADMIN */}
+        <Route path="/admin/courses" element={<AdminCourses />} />
+
+        {/* FALLBACK */}
+        <Route path="*" element={<h2 className="text-center mt-5">Page Not Found</h2>} />
+      </Routes>
+    </>
+  );
 }
 
-export default App
+export default App;
