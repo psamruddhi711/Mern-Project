@@ -6,16 +6,17 @@ function Navbar() {
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-2 sticky-top">
       <div className="container-fluid">
 
-        {/* Brand: Logo + Name */}
+        {/* Brand: Logo inside div */}
         <NavLink
           to="/home"
           className="navbar-brand d-flex align-items-center gap-2 fw-bold text-warning fs-4"
         >
-          <div>
-          <img
-            src="C:\Users\ayush\OneDrive\Desktop\SUNBEAM SOLUTION ASS\Mern-Project\FRONT_APP\APP\app1\public\learnsphere-logo.jpg.jpg"
-            style={{ height: "90%",width: "90%" }}
-          />
+          <div className="logo-wrapper">
+            <img
+              src="learnsphere-logo.png"
+              alt=""
+              className="logo-img"
+            />
           </div>
           LearnSphere
         </NavLink>
@@ -32,7 +33,6 @@ function Navbar() {
 
         {/* Navbar Content */}
         <div className="collapse navbar-collapse" id="navbarNav">
-
           {/* Left Links */}
           <ul className="navbar-nav ms-3">
             <li className="nav-item">
@@ -40,13 +40,11 @@ function Navbar() {
                 Home
               </NavLink>
             </li>
-
             <li className="nav-item">
               <NavLink className="nav-link fw-semibold" to="/courses">
                 Courses
               </NavLink>
             </li>
-
             <li className="nav-item">
               <NavLink className="nav-link fw-semibold" to="/profile">
                 Profile
@@ -56,21 +54,13 @@ function Navbar() {
 
           {/* Right Buttons */}
           <div className="ms-auto d-flex gap-2">
-            <NavLink
-              to="/signup"
-              className="btn btn-sm btn-outline-warning px-3"
-            >
+            <NavLink to="/signup" className="btn btn-sm btn-outline-warning px-3">
               Sign Up
             </NavLink>
-
-            <NavLink
-              to="/login"
-              className="btn btn-sm btn-warning px-3"
-            >
+            <NavLink to="/login" className="btn btn-sm btn-warning px-3">
               Login
             </NavLink>
           </div>
-
         </div>
       </div>
     </nav>
