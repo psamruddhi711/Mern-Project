@@ -1,0 +1,29 @@
+/* Smooth hover effect on nav links */
+.navbar .nav-link {
+  transition: color 0.2s ease;
+}
+
+.navbar .nav-link:hover {
+  color: #ffc107 !important;
+}
+
+/* Active page highlight */
+.nav-link.active {
+  color: #ffc107 !important;
+  border-bottom: 2px solid #ffc107;
+  padding-bottom: 6px;
+}
+
+/* Button hover effect */
+.btn {
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Space below navbar */
+body {
+  padding-top: 64px;
+}
