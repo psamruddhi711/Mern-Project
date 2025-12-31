@@ -5,18 +5,14 @@ const { checkAuthorization } = require("../utils/auth");
 
 const router = express.Router();
 
-/* =========================
-   GET ALL COURSES
-========================= */
+/* GET ALL COURSES */
 router.get("/all-courses", (req, res) => {
   pool.query("SELECT * FROM courses", (error, data) => {
     res.send(result.createResult(error, data));
   });
 });
 
-/* =========================
-   ADD COURSE (ADMIN)
-========================= */
+/* ADD COURSE (ADMIN) */
 router.post("/add", checkAuthorization, (req, res) => {
   const {
     courseName,
@@ -37,14 +33,22 @@ router.post("/add", checkAuthorization, (req, res) => {
     sql,
     [courseName, description, fees, startDate, endDate, videoExpireDays],
     (error, data) => {
-      res.send(result.createResult(error, data));
+      if (error) {
+        console.error("INSERT ERROR:", error);
+        return res.send(result.createResult(error));
+      }
+
+      res.send(
+        result.createResult(null, {
+          message: "Course added successfully",
+          id: data.insertId,
+        })
+      );
     }
   );
 });
 
-/* =========================
-   UPDATE COURSE
-========================= */
+/* UPDATE COURSE */
 router.put("/update/:courseId", checkAuthorization, (req, res) => {
   const { courseId } = req.params;
   const {
@@ -74,24 +78,24 @@ router.put("/update/:courseId", checkAuthorization, (req, res) => {
       courseId,
     ],
     (error, data) => {
-      res.send(result.createResult(error, data));
+      if (error) return res.send(result.createResult(error));
+      res.send(result.createResult(null, "Course updated successfully"));
     }
   );
 });
 
-/* =========================
-   DELETE COURSE
-========================= */
+/* DELETE COURSE */
 router.delete("/delete/:courseId", checkAuthorization, (req, res) => {
   const { courseId } = req.params;
 
   pool.query(
     "DELETE FROM courses WHERE course_id = ?",
     [courseId],
-    (error, data) => {
-      res.send(result.createResult(error, data));
+    (error) => {
+      if (error) return res.send(result.createResult(error));
+      res.send(result.createResult(null, "Course deleted successfully"));
     }
   );
 });
 
-module.exports = router; // ✅ THIS LINE FIXES EVERYTHING
+module.exports = router;
