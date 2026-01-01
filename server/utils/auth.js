@@ -3,38 +3,25 @@ const config = require("./config");
 const result = require("./result");
 
 function authUser(req, res, next) {
-  const path = req.url;
-
-  // Public routes
-  if (path === "/users/signin" || path === "/students/register-to-course") {
-    return next();
-  }
-
   try {
-    const token = req.headers.token; // 🔥 backend expects token here
-
+    const token = req.headers.token;
     if (!token) {
-      return res.send(result.createResult("Token is missing"));
+      return res.send(result.createResult("Token missing"));
     }
 
     const payload = jwt.verify(token, config.SECRET);
-    req.user = payload;
-    req.headers.role = payload.role;
+    req.user = payload; // 🔥 REQUIRED
     next();
-  } catch (err) {
-    return res.send(result.createResult("Token is invalid"));
+  } catch {
+    return res.send(result.createResult("Invalid token"));
   }
 }
 
 function checkAuthorization(req, res, next) {
-  const role = req.user?.role;
-  console.log("Current role:", role);
-
-  if (role === "ADMIN") {
+  if (req.user.role === "ADMIN") {
     return next();
   }
-
-  return res.send(result.createResult("Unauthorized Access!"));
+  return res.send(result.createResult("Unauthorized"));
 }
 
 module.exports = { authUser, checkAuthorization };

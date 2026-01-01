@@ -1,15 +1,18 @@
 import axios from "axios";
 
-const instance = axios.create({
+const axiosInstance = axios.create({
   baseURL: "http://localhost:4000",
 });
 
-instance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.token = token; 
-  }
-  return config;
-});
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.token = token; // backend expects req.headers.token
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-export default instance;
+export default axiosInstance;

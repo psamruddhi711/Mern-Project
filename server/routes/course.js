@@ -1,19 +1,26 @@
 const express = require("express");
 const pool = require("../db/pool");
 const result = require("../utils/result");
-const { checkAuthorization } = require("../utils/auth");
+const { authUser, checkAuthorization } = require("../utils/auth");
 
 const router = express.Router();
 
-/* GET ALL COURSES */
+/* ==========================
+   GET ALL COURSES (PUBLIC)
+========================= */
 router.get("/all-courses", (req, res) => {
   pool.query("SELECT * FROM courses", (error, data) => {
-    res.send(result.createResult(error, data));
+    return res.send(result.createResult(error, data));
   });
 });
 
-/* ADD COURSE (ADMIN) */
-router.post("/add", checkAuthorization, (req, res) => {
+/* =========================
+   ADD COURSE (ADMIN)
+========================= */
+router.post("/add", authUser, checkAuthorization, (req, res) => {
+  console.log("ADD COURSE BODY:", req.body);
+  console.log("USER:", req.user);
+
   const {
     courseName,
     description,
@@ -33,24 +40,19 @@ router.post("/add", checkAuthorization, (req, res) => {
     sql,
     [courseName, description, fees, startDate, endDate, videoExpireDays],
     (error, data) => {
-      if (error) {
-        console.error("INSERT ERROR:", error);
-        return res.send(result.createResult(error));
-      }
-
-      res.send(
-        result.createResult(null, {
-          message: "Course added successfully",
-          id: data.insertId,
-        })
-      );
+      console.log("ADD ERROR:", error);
+      console.log("ADD RESULT:", data);
+      return res.send(result.createResult(error, data));
     }
   );
 });
 
-/* UPDATE COURSE */
-router.put("/update/:courseId", checkAuthorization, (req, res) => {
+/* =========================
+   UPDATE COURSE (ADMIN)
+========================= */
+router.put("/update/:courseId", authUser, checkAuthorization, (req, res) => {
   const { courseId } = req.params;
+
   const {
     courseName,
     description,
@@ -78,24 +80,24 @@ router.put("/update/:courseId", checkAuthorization, (req, res) => {
       courseId,
     ],
     (error, data) => {
-      if (error) return res.send(result.createResult(error));
-      res.send(result.createResult(null, "Course updated successfully"));
+      return res.send(result.createResult(error, data));
     }
   );
 });
 
-/* DELETE COURSE */
-router.delete("/delete/:courseId", checkAuthorization, (req, res) => {
+/* =========================
+   DELETE COURSE (ADMIN)
+========================= */
+router.delete("/delete/:courseId", authUser, checkAuthorization, (req, res) => {
   const { courseId } = req.params;
 
-  pool.query(
-    "DELETE FROM courses WHERE course_id = ?",
-    [courseId],
-    (error) => {
-      if (error) return res.send(result.createResult(error));
-      res.send(result.createResult(null, "Course deleted successfully"));
-    }
-  );
+  const sql = `DELETE FROM courses WHERE course_id = ?`;
+
+  pool.query(sql, [courseId], (error, data) => {
+    console.log("DELETE ERROR:", error);
+    console.log("DELETE RESULT:", data);
+    return res.send(result.createResult(error, data));
+  });
 });
 
 module.exports = router;
