@@ -8,7 +8,7 @@ const About = () => {
       <Navbar />
       {/* Hero Section */}
       <div className="text-center mb-5 p-5 bg-dark text-white rounded shadow">
-        <h1 className="fw-bold display-4">About <span className="text-warning">Sunbeam</span></h1>
+        <h1 className="fw-bold display-4">About <span className="text-warning">Learnsphere</span></h1>
         <p className="lead">Premier Training Institute for C-DAC & Advanced Computing</p>
       </div>
 
@@ -16,7 +16,7 @@ const About = () => {
         <div className="col-md-6">
           <h2 className="fw-bold text-dark">Our Legacy</h2>
           <p className="text-muted" style={{ textAlign: "justify" }}>
-            Established in the late 90s, <strong>Sunbeam Institute of Information Technology</strong> 
+            Established in the late 90s, <strong>Learnsphere Institute of Information Technology</strong> 
             has evolved into a multi-technology competency center. We believe that retaining a 
             competitive edge is imperative in today’s professional world. 
           </p>
@@ -28,7 +28,7 @@ const About = () => {
         </div>
         <div className="col-md-6">
           <div className="card border-warning shadow-sm p-4">
-            <h4 className="text-warning fw-bold">Why Sunbeam?</h4>
+            <h4 className="text-warning fw-bold">Why Learnsphere?</h4>
             <ul className="list-group list-group-flush">
               <li className="list-group-item bg-transparent"> 25+ Years of Educational Excellence</li>
               <li className="list-group-item bg-transparent"> 50,000+ Students Trained & Placed</li>
