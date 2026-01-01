@@ -15,9 +15,16 @@ const router = express.Router();
 router.post("/signin", (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    return res.send(result.createResult("Email and password required"));
+  }
+
+  // ✅ HASH PASSWORD BEFORE QUERY
+  const hashedPassword = cryptojs.SHA256(password).toString();
+
   const sql = `SELECT * FROM users WHERE email = ? AND password = ?`;
 
-  pool.query(sql, [email, password], (error, data) => {
+  pool.query(sql, [email, hashedPassword], (error, data) => {
     if (error) {
       return res.send(result.createResult(error));
     }
@@ -34,7 +41,9 @@ router.post("/signin", (req, res) => {
       role: user.role,
     };
 
-    const token = jwt.sign(payload, config.SECRET);
+    const token = jwt.sign(payload, config.SECRET, {
+      expiresIn: "1d",
+    });
 
     res.send(
       result.createResult(null, {
@@ -57,7 +66,7 @@ router.post("/signup", (req, res) => {
   }
 
   const hashedPassword = cryptojs.SHA256(password).toString();
-  const userRole = role || "STUDENT"; // default role
+  const userRole = role || "STUDENT";
 
   const sql = `INSERT INTO users (email, password, role) VALUES (?,?,?)`;
 
@@ -100,9 +109,7 @@ router.delete("/delete-user", checkAuthorization, (req, res) => {
     "DELETE FROM students WHERE email = ?",
     [email],
     (err1) => {
-      if (err1) {
-        return res.send(result.createResult(err1));
-      }
+      if (err1) return res.send(result.createResult(err1));
 
       pool.query(
         "DELETE FROM users WHERE email = ? AND role = 'STUDENT'",
