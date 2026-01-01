@@ -7,26 +7,7 @@ export default function Home() {
     <>
       <Navbar />
 
-      {/* HERO */}
-      <section className="hero">
-        <div className="hero-overlay">
-          <h5>Learn From Home</h5>
-          <h1>Education Courses</h1>
-
-          <div className="search-box">
-            <select>
-              <option>Courses</option>
-              <option>MERN Stack</option>
-              <option>Java Full Stack</option>
-              <option>Python</option>
-            </select>
-            <input type="text" placeholder="Keyword" />
-            <button>Search</button>
-          </div>
-        </div>
-      </section>
-
-      {/* ABOUT */}
+           {/* ABOUT */}
       <section className="about container">
         <div className="row align-items-center">
           <div className="col-md-6">

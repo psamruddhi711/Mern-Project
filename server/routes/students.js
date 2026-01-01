@@ -1,8 +1,6 @@
 //students.js
 
-//const express = require("express");
-//const cryptojs = require("crypto-js");
-//const router = express.Router(); 
+
 
 const express = require("express");
 const cryptojs = require("crypto-js");
@@ -13,21 +11,60 @@ const result = require("../utils/result");
 
 
 router.post("/register-to-course", (req, res) => {
-  const {reg_no, name, email, course_id, mobile_no } = req.body;
+  const { name, email, course_id, mobile_no } = req.body;
 
-  if (!reg_no||!name || !email || !course_id || !mobile_no) {
+  if (!name || !email || !course_id || !mobile_no) {
     return res.send(
-      result.createResult("reg_no, name, email, course_id, mobile_no are required")
+      result.createResult("name, email, course_id, mobile_no are required")
     );
   }
 
-  const sql =
-    "INSERT INTO students (reg_no, name, email, course_id, mobile_no) VALUES (?,?,?,?,?)";
+  // Check if user already exists
+  const checkUserSql = "SELECT email FROM users WHERE email = ?";
 
-  pool.query(sql, [reg_no, name, email, course_id, mobile_no], (error, data) => {
-    res.send(result.createResult(error, data));
+  pool.query(checkUserSql, [email], (err, users) => {
+    if (err) {
+      return res.send(result.createResult(err));
+    }
+
+    // 2️⃣ If user NOT exists → insert into users
+    if (users.length === 0) {
+      const insertUserSql =
+        "INSERT INTO users (email, password, role) VALUES (?, ?, ?)";
+
+      pool.query(
+        insertUserSql,
+        [email, "12345", "STUDENT"], // default password
+        (err2) => {
+          if (err2) {
+            return res.send(result.createResult(err2));
+          }
+
+          insertStudent(res);
+        }
+      );
+    } 
+    
+    else {
+      insertStudent(res);
+    }
   });
+
+
+  function insertStudent(res) {
+    const insertStudentSql =
+      "INSERT INTO students (name, email, course_id, mobile_no) VALUES (?,?,?,?)";
+
+    pool.query(
+      insertStudentSql,
+      [name, email, course_id, mobile_no],
+      (err3, data) => {
+        res.send(result.createResult(err3, data));
+      }
+    );
+  }
 });
+
 
 
 router.put("/change-password", (req, res) => {

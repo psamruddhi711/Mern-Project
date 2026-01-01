@@ -2,24 +2,18 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 function Navbar() {
+  const token = localStorage.getItem("token");
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-2 sticky-top">
       <div className="container-fluid">
-
-        {/* Brand: Logo + Name */}
         <NavLink
           to="/home"
-          className="navbar-brand d-flex align-items-center gap-2 fw-bold text-warning fs-4"
+          className="navbar-brand fw-bold text-warning fs-4"
         >
-          <img
-            src="/learnsphere-logo.png"
-            alt="LearnSphere Logo"
-            style={{ height: "30px" }}
-          />
           LearnSphere
         </NavLink>
 
-        {/* Mobile Toggle */}
         <button
           className="navbar-toggler"
           type="button"
@@ -29,47 +23,50 @@ function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Navbar Content */}
         <div className="collapse navbar-collapse" id="navbarNav">
-
-          {/* Left Links */}
           <ul className="navbar-nav ms-3">
             <li className="nav-item">
-              <NavLink className="nav-link fw-semibold" to="/home">
-                Home
-              </NavLink>
+              <NavLink className="nav-link" to="/home">Home</NavLink>
             </li>
-
             <li className="nav-item">
-              <NavLink className="nav-link fw-semibold" to="/courses">
-                Courses
-              </NavLink>
+              <NavLink className="nav-link" to="/courses">Courses</NavLink>
             </li>
-
             <li className="nav-item">
-              <NavLink className="nav-link fw-semibold" to="/profile">
-                Profile
-              </NavLink>
+              <NavLink className="nav-link" to="/about">About</NavLink>
+            </li>
+            {/* New Video Button Added Here */}
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/videos">Videos</NavLink>
             </li>
           </ul>
 
-          {/* Right Buttons */}
           <div className="ms-auto d-flex gap-2">
-            <NavLink
-              to="/signup"
-              className="btn btn-sm btn-outline-warning px-3"
-            >
-              Sign Up
-            </NavLink>
-
-            <NavLink
-              to="/login"
-              className="btn btn-sm btn-warning px-3"
-            >
-              Login
-            </NavLink>
+            {!token ? (
+              <>
+                <NavLink to="/signup" className="btn btn-outline-warning btn-sm">
+                  Sign Up
+                </NavLink>
+                <NavLink to="/login" className="btn btn-warning btn-sm">
+                  Login
+                </NavLink>
+              </>
+            ) : (
+              <>
+                <NavLink to="/profile" className="btn btn-outline-warning btn-sm">
+                  Profile
+                </NavLink>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => {
+                    localStorage.clear();
+                    window.location.href = "/home";
+                  }}
+                >
+                  Logout
+                </button>
+              </>
+            )}
           </div>
-
         </div>
       </div>
     </nav>
