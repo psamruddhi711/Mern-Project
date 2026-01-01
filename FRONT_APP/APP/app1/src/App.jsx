@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Register from "./pages/Register";
 import VideoPage from "./pages/Videos";
+import About from "./components/about";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/register/:courseId" element={<Register />} />
       <Route path="/Videos" element={<VideoPage />} />
+      <Route path="/about" element={<About />} />
       <Route path="*" element={<h2>Page Not Found</h2>} />
     </Routes>
   );
